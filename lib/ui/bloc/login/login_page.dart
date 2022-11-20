@@ -75,7 +75,10 @@ class _LoginPageBlocState extends State<LoginPageBloc> {
                       ],
                     ),
                     const Center(
-                      child: CircularProgressIndicator(),
+                      child: TextButton(
+                        onPressed: null,
+                        child: Text("Login")
+                      ),
                     )
                   ],
                 );
