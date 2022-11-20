@@ -35,123 +35,128 @@ class _LoginPageBlocState extends State<LoginPageBloc> {
           Navigator.pushReplacementNamed(context, '/list');
         }
       },
-      child: Center(
-        child: Container(
-          width: 400,
-          height: 300,
-          margin: const EdgeInsets.symmetric(horizontal: 20),
-          padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-              shape: BoxShape.rectangle,
-              color: Colors.green,
-              borderRadius: BorderRadius.circular(16)),
-          child: BlocBuilder<LoginBloc, LoginState>(builder: (context, state) {
-            if (state is LoginLoading) {
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  TextField(
-                    controller: _email,
-                    decoration: const InputDecoration(labelText: 'Email'),
-                    enabled: false,
-                  ),
-                  TextField(
-                    controller: _password,
-                    obscureText: true,
-                    decoration: InputDecoration(labelText: 'Password'),
-                    enabled: false,
-                  ),
-                  Row(
-                    children: [
-                      const Text("Remember me"),
-                      Checkbox(
-                        onChanged: null,
-                        value: _remember,
-                      )
-                    ],
-                  ),
-                  const Center(
-                    child: CircularProgressIndicator(),
-                  )
-                ],
-              );
-            } else {
-              return Column(
-                children: [
-                  TextField(
-                    controller: _email,
-                    decoration: InputDecoration(
-                        labelText: 'Email', errorText: _emailError),
-                    onChanged: (value) {
-                      setState(() {
-                        _emailError = null;
-                      });
-                    },
-                  ),
-                  TextField(
-                    controller: _password,
-                    obscureText: true,
-                    decoration: InputDecoration(
-                        labelText: 'Password', errorText: _passwordError),
-                    onChanged: (value) {
-                      setState(() {
-                        _passwordError = null;
-                      });
-                    },
-                  ),
-                  Row(
-                    children: [
-                      const Text("Remember me"),
-                      Checkbox(
-                        onChanged: (checked) {
-                          if (checked != null) {
+      child: Container(
+        decoration: const BoxDecoration(
+          color: Colors.grey
+        ),
+        child: Center(
+          child: Container(
+            width: 400,
+            height: 300,
+            margin: const EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+                shape: BoxShape.rectangle,
+                color: Colors.green,
+                borderRadius: BorderRadius.circular(16)),
+            child: BlocBuilder<LoginBloc, LoginState>(builder: (context, state) {
+              if (state is LoginLoading) {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    TextField(
+                      controller: _email,
+                      decoration: const InputDecoration(labelText: 'Email'),
+                      enabled: false,
+                    ),
+                    TextField(
+                      controller: _password,
+                      obscureText: true,
+                      decoration: InputDecoration(labelText: 'Password'),
+                      enabled: false,
+                    ),
+                    Row(
+                      children: [
+                        const Text("Remember me"),
+                        Checkbox(
+                          onChanged: null,
+                          value: _remember,
+                        )
+                      ],
+                    ),
+                    const Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  ],
+                );
+              } else {
+                return Column(
+                  children: [
+                    TextField(
+                      controller: _email,
+                      decoration: InputDecoration(
+                          labelText: 'Email', errorText: _emailError),
+                      onChanged: (value) {
+                        setState(() {
+                          _emailError = null;
+                        });
+                      },
+                    ),
+                    TextField(
+                      controller: _password,
+                      obscureText: true,
+                      decoration: InputDecoration(
+                          labelText: 'Password', errorText: _passwordError),
+                      onChanged: (value) {
+                        setState(() {
+                          _passwordError = null;
+                        });
+                      },
+                    ),
+                    Row(
+                      children: [
+                        const Text("Remember me"),
+                        Checkbox(
+                          onChanged: (checked) {
+                            if (checked != null) {
+                              setState(() {
+                                _remember = checked;
+                              });
+                            }
+                          },
+                          value: _remember,
+                        )
+                      ],
+                    ),
+                    Center(
+                      child: TextButton(
+                        style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all<Color>(Colors.white)),
+                        onPressed: () {
+                          if (!isEmail(_email.text)) {
                             setState(() {
-                              _remember = checked;
+                              _emailError = 'Have to be an email address!';
+                            });
+                          } else {
+                            setState(() {
+                              _emailError = null;
                             });
                           }
+                          if (!isLength(_password.text, 6)) {
+                            setState(() {
+                              _passwordError =
+                                  'Have to be at least 6 characters!';
+                            });
+                          } else {
+                            setState(() {
+                              _passwordError = null;
+                            });
+                          }
+                          if (isEmail(_email.text) &&
+                              isLength(_password.text, 6)) {
+                            context.read<LoginBloc>().add(LoginSubmitEvent(
+                                _email.text, _password.text, _remember));
+                          }
                         },
-                        value: _remember,
-                      )
-                    ],
-                  ),
-                  Center(
-                    child: TextButton(
-                      style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all<Color>(Colors.white)),
-                      onPressed: () {
-                        if (!isEmail(_email.text)) {
-                          setState(() {
-                            _emailError = 'Have to be an email address!';
-                          });
-                        } else {
-                          setState(() {
-                            _emailError = null;
-                          });
-                        }
-                        if (!isLength(_password.text, 6)) {
-                          setState(() {
-                            _passwordError =
-                                'Have to be at least 6 characters!';
-                          });
-                        } else {
-                          setState(() {
-                            _passwordError = null;
-                          });
-                        }
-                        if (isEmail(_email.text) &&
-                            isLength(_password.text, 6)) {
-                          context.read<LoginBloc>().add(LoginSubmitEvent(
-                              _email.text, _password.text, _remember));
-                        }
-                      },
-                      child: const Text("Login"),
-                    ),
-                  )
-                ],
-              );
-            }
-          }),
+                        child: const Text("Login"),
+                      ),
+                    )
+                  ],
+                );
+              }
+            }),
+          ),
         ),
       ),
     ));
