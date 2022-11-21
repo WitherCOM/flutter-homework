@@ -25,7 +25,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       };
       try {
         emit(LoginLoading());
-        Map<String, String> data =
+        Map data =
             (await GetIt.I<Dio>().post('/login', data: loginData)).data;
         final token = data['token'];
         GetIt.I<Dio>().options.headers['Authorization'] = "Bearer $token";

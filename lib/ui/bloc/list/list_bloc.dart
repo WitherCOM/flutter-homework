@@ -18,10 +18,9 @@ class ListBloc extends Bloc<ListEvent, ListState> {
           }
           emit(ListLoading());
           try {
-            List<UserItem> users =
-            ((await GetIt.I<Dio>().get(
-                    '/users')).data as List<Map<String,String>>)
-            .map((e) => UserItem(e["name"] ?? '', e["avatarUrl"] ?? '')).toList();
+            List responseData = (await GetIt.I<Dio>().get('/users')).data;
+            List<UserItem> users = responseData
+            .map((e) => UserItem(e["name"] ?? '', e["avatarUrl"] ?? '')).cast<UserItem>().toList();
             emit(ListLoaded(users));
           }
           on DioError
