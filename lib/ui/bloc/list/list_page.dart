@@ -30,7 +30,7 @@ class _ListPageBlocState extends State<ListPageBloc> {
           IconButton(
             onPressed: () {
               GetIt.I<Dio>().options.headers.remove('Authorization');
-              GetIt.I<SharedPreferences>().remove('token');
+              GetIt.I<SharedPreferences>().clear();
               Navigator.pushReplacementNamed(context, '/');
             },
             icon: const Icon(Icons.logout),
